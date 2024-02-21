@@ -26,13 +26,17 @@ class SimulationEnv(gym.Env):
         self.image_array = np.asarray(self.image_initial_cv2)
         print (self.image_array.shape)
         self.observation_space = spaces.Box(low=0, high=255, shape=self.image_array.shape, dtype=np.uint8)
+        self.action_space = spaces.Discrete(10)
     def reset(self):
         self.current_observation = self._get_observation()
         return self.current_observation
     def render(self, mode=None):
-        self._get_observation()
-    def step(self):
-        current_observation = self._get_observation(self)
-        return current_observation
-    def close():
+        pass
+    def step(self, action):
+        self.current_observation = self._get_observation()
+        self.reward = 1
+        info = 0
+        _ = 0
+        return self.current_observation, self.reward, info, _
+    def close(self):
         pass
