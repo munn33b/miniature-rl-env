@@ -7,6 +7,7 @@ from cv_bridge import CvBridge
 import rospy
 import time
 from matplotlib import pyplot as plt
+from geometry_msgs.msg import Twist
 
 class SimulationEnv(gym.Env):
     metadata = {
@@ -35,6 +36,7 @@ class SimulationEnv(gym.Env):
         self.image_array = np.asarray(self.image_initial_cv2)
         print (self.image_array.shape)
         print (self.image_array)
+        self.steering_publisher = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
         self.observation_space = spaces.Box(low=0, high=255, shape=self.image_array.shape, dtype=np.uint8)
         self.action_space = spaces.Discrete(10)
     def reset(self):
@@ -43,6 +45,33 @@ class SimulationEnv(gym.Env):
     def render(self, mode=None):
         pass
     def step(self, action):
+        take_action = action
+        steering_angle = 0
+        if (take_action == 0):
+            steering_angle = 0
+        elif (take_action == 1):
+            steering_angle = 0.10
+        elif (take_action == 2):
+            steering_angle = 0.15
+        elif (take_action == 3):
+            steering_angle = 0.20
+        elif (take_action == 4):
+            steering_angle = 0.30
+        elif (take_action == 5):
+            steering_angle = -0.10
+        elif (take_action == 6):
+            steering_angle = -0.15
+        elif (take_action == 7):
+            steering_angle = -0.20
+        elif (take_action == 8):
+            steering_angle = -0.25
+        elif (take_action == 9):
+            steering_angle = -0.30
+        steering_msg = Twist()
+        steering_msg.linear.x = -0.30
+        steering_msg.angular.z = steering_angle
+        self.steering_publisher.publish(steering_msg)
+        print (take_action)
         self.current_observation = self._get_observation()
         self.reward = self.compute_reward()
         info = 0
