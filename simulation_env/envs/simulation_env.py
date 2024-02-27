@@ -6,6 +6,7 @@ import cv2
 from cv_bridge import CvBridge
 import rospy
 import time
+from matplotlib import pyplot as plt
 
 class SimulationEnv(gym.Env):
     metadata = {
@@ -17,6 +18,11 @@ class SimulationEnv(gym.Env):
         rospy.Subscriber("/miniature_robot/camera/image_raw", Image, self.camera_cb)
         time.sleep(0.1)
         self.image_array = np.asarray(self.image)
+        #cv2.imshow("Output", self.image)
+        #cv2.waitKey(1000)
+        #cv2.destroyAllWindows()
+        #plt.imshow(self.image_array, interpolation='nearest')
+        #plt.show()
         return self.image_array
     def __init__(self):
         self.bridge = CvBridge()
