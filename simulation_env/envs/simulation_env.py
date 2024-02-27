@@ -14,6 +14,9 @@ class SimulationEnv(gym.Env):
     }
     def camera_cb(self, camera_img_msg):
         self.image = self.bridge.imgmsg_to_cv2(camera_img_msg, "bgr8")
+    def compute_reward(self):
+        self.reward = 1
+        return self.reward
     def _get_observation(self):
         rospy.Subscriber("/miniature_robot/camera/image_raw", Image, self.camera_cb)
         time.sleep(0.1)
@@ -31,6 +34,7 @@ class SimulationEnv(gym.Env):
         self.image_initial_cv2 = self.bridge.imgmsg_to_cv2(self.image_initial, "bgr8")
         self.image_array = np.asarray(self.image_initial_cv2)
         print (self.image_array.shape)
+        print (self.image_array)
         self.observation_space = spaces.Box(low=0, high=255, shape=self.image_array.shape, dtype=np.uint8)
         self.action_space = spaces.Discrete(10)
     def reset(self):
@@ -40,7 +44,7 @@ class SimulationEnv(gym.Env):
         pass
     def step(self, action):
         self.current_observation = self._get_observation()
-        self.reward = 1
+        self.reward = self.compute_reward()
         info = 0
         _ = 0
         return self.current_observation, self.reward, info, _
